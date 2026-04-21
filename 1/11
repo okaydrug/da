@@ -1,0 +1,54 @@
+mport java.util.Scanner;
+import java.time.*;
+
+public class Main {
+    public static void main(String[] args){
+
+        System.out.println("Задание A1");
+
+        System.out.println("Добрый день!\nВведите своё имя");
+        Scanner a = new Scanner(System.in);
+        String name = a.nextLine();
+        System.out.println("Добро пожаловать "+name);
+
+        System.out.println("Задание A2");
+
+        System.out.println("Аргументы в обр. пор.");
+        for(int i = args.length; i >0; i--){
+            System.out.println(args[i-1]);
+        }
+
+        System.out.println("Задание A3");
+
+        Scanner b = new Scanner(System.in);
+        int bas = b.nextInt();
+      //  int r = (int) Math.round(Math.random()*100);
+        for(int i = 0; i<bas;i++) {
+            int r = (int) Math.round(Math.random() * 100);
+            System.out.println(r);
+        }
+        for(int y = 0; y<bas;y++) {
+            int r = (int) Math.round(Math.random() * 100);
+            System.out.print(r + "\t");
+            }
+        System.out.println();
+
+        System.out.println("Задание A4");
+
+        if(args[args.length - 1].equals("qwerty")){
+            System.out.println("Пароль Верный!");
+        }
+        else System.out.println("Пароль Неверный!");
+
+        System.out.println("Задание A5");
+
+        System.out.println("Введите 2 целых числа");
+        int a1 = b.nextInt(),a2 = b.nextInt();
+        System.out.println("Сумма= "+(a1+a2)+"\nПроизведение ="+(a1*a2));
+
+        System.out.println("Задание A6");
+
+        System.out.println("Богданова Алина\t"+LocalDateTime.now());
+
+    }
+}
