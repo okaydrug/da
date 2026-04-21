@@ -1,0 +1,266 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.time.*;
+
+public class Main{
+    public static void main(String[] args){
+
+        System.out.println("Сколько чисел вы будете вводить?");
+        Scanner a = new Scanner(System.in);
+        int cal = a.nextInt();
+        int[] mas = new int[cal];
+        System.out.println("Впишите числа в массив");
+        for (int i = 0; i < cal; i++){
+            mas[i] = a.nextInt();
+        }
+
+        int[] mas1 = sort(mas, cal);
+        List<List<Integer>> mas4 = masadelen(mas1);
+        int[] mas2 = colichestvo(mas1, cal);
+        int[] mas3 = summpopolam(mas1, cal);
+
+        // Новые методы
+        int minUniqueDigitsNumber = findNumberWithMinUniqueDigits(mas1);
+        int[] evenDigitsStats = countEvenDigitsNumbers(mas1);
+        int firstIncreasingNumber = findFirstIncreasingDigitsNumber(mas1);
+        int firstUniqueDigitsNumber = findFirstUniqueDigitsNumber(mas1);
+
+        //System.out.println("Числа больше средней суммы");
+        System.out.println("НЕ отсортированный массив  " + Arrays.toString(mas));
+        System.out.println("отсортированный массив    " + Arrays.toString(mas1));
+        System.out.println("Количесво символов        " + Arrays.toString(mas2));
+        System.out.println("Числа больше средней суммы" + Arrays.toString(mas3));
+        System.out.println("Наибольшее число:" + mas1[cal-1] + " Его длина:" + mas2[cal-1] +
+                "\nНаименьшее число:" + mas1[0] + " Его длина:" + mas2[0]);
+        System.out.println("Состав каждого числа" + mas4);
+
+        // Вывод результатов новых методов
+        System.out.println("\n=== НОВЫЕ ЗАДАНИЯ ===");
+        System.out.println("4. Число с минимальным количеством различных цифр: " + minUniqueDigitsNumber);
+        System.out.println("5. Количество чисел только с четными цифрами: " + evenDigitsStats[0]);
+        System.out.println("   Из них с равным числом четных и нечетных цифр: " + evenDigitsStats[1]);
+        System.out.println("6. Первое число с цифрами в строгом порядке возрастания: " +
+                (firstIncreasingNumber != Integer.MIN_VALUE ? firstIncreasingNumber : "Таких чисел нет"));
+        System.out.println("7. Первое число только из различных цифр: " +
+                (firstUniqueDigitsNumber != Integer.MIN_VALUE ? firstUniqueDigitsNumber : "Таких чисел нет"));
+
+        System.out.println("Богданова Алина\t" + LocalDateTime.now());
+    }
+
+    // Задание 4: Найти число с минимальным количеством различных цифр
+    public static int findNumberWithMinUniqueDigits(int[] array) {
+        int minUniqueCount = Integer.MAX_VALUE;
+        int result = array[0];
+
+        for (int num : array) {
+            int uniqueCount = countUniqueDigits(num);
+            if (uniqueCount < minUniqueCount) {
+                minUniqueCount = uniqueCount;
+                result = num;
+            }
+        }
+
+        return result;
+    }
+
+    // Подсчет количества различных цифр в числе
+    private static int countUniqueDigits(int number) {
+        number = Math.abs(number);
+        if (number == 0) return 1;
+
+        boolean[] digits = new boolean[10];
+        while (number > 0) {
+            digits[number % 10] = true;
+            number /= 10;
+        }
+
+        int count = 0;
+        for (boolean digit : digits) {
+            if (digit) count++;
+        }
+        return count;
+    }
+
+    // Задание 5: Подсчет чисел с четными цифрами и с равным числом четных и нечетных
+    public static int[] countEvenDigitsNumbers(int[] array) {
+        int evenDigitsOnly = 0; // Только четные цифры
+        int equalEvenOdd = 0;    // Равное количество четных и нечетных
+
+        for (int num : array) {
+            int[] evenOddCount = countEvenAndOddDigits(num);
+            int even = evenOddCount[0];
+            int odd = evenOddCount[1];
+
+            // Проверка: все цифры четные
+            if (odd == 0) {
+                evenDigitsOnly++;
+            }
+
+                    //' Проверка: равное количество четных и нечетных
+            if (even == odd) {
+                equalEvenOdd++;
+            }
+        }
+
+        return new int[]{evenDigitsOnly, equalEvenOdd};
+    }
+
+    // Подсчет четных и нечетных цифр в числе
+    private static int[] countEvenAndOddDigits(int number) {
+        number = Math.abs(number);
+        if (number == 0) return new int[]{1, 0}; // 0 - четная цифра
+
+        int even = 0, odd = 0;
+        while (number > 0) {
+            int digit = number % 10;
+            if (digit % 2 == 0) {
+                even++;
+            } else {
+                odd++;
+            }
+            number /= 10;
+        }
+        return new int[]{even, odd};
+    }
+
+    // Задание 6: Найти первое число с цифрами в строгом порядке возрастания
+    public static int findFirstIncreasingDigitsNumber(int[] array) {
+        for (int num : array) {
+            if (hasIncreasingDigits(num)) {
+                return num;
+            }
+        }
+        return Integer.MIN_VALUE; // Если таких чисел нет
+    }
+
+    // Проверка, идут ли цифры в строгом порядке возрастания
+    private static boolean hasIncreasingDigits(int number) {
+        number = Math.abs(number);
+        if (number < 10) return true; // Однозначное число считается возрастающим
+
+        int prevDigit = number % 10;
+        number /= 10;
+
+        while (number > 0) {
+            int currentDigit = number % 10;
+            if (currentDigit >= prevDigit) {
+                return false; // Не строго возрастает (должно быть currentDigit < prevDigit)
+            }
+            prevDigit = currentDigit;
+            number /= 10;
+        }
+        return true;
+    }
+
+    // Задание 7: Найти первое число только из различных цифр
+    public static int findFirstUniqueDigitsNumber(int[] array) {
+        for (int num : array) {
+            if (hasAllUniqueDigits(num)) {
+                return num;
+            }
+        }
+        return Integer.MIN_VALUE; // Если таких чисел нет
+    }
+
+    // Проверка, все ли цифры в числе различны
+    private static boolean hasAllUniqueDigits(int number) {
+        number = Math.abs(number);
+        if (number < 10) return true; // Однозначное число всегда с различными цифрами
+
+        boolean[] seen = new boolean[10];
+        while (number > 0) {
+            int digit = number % 10;
+            if (seen[digit]) {
+                return false; // Цифра уже встречалась
+            }
+            seen[digit] = true;
+            number /= 10;
+        }
+        return true;
+    }
+
+    // Остальные методы остаются без изменений
+    public static List<List<Integer>> sxohest(List<List<Integer>> masa) {
+        List<List<Integer>> rez = new ArrayList<>();
+        for (List<Integer> i : masa) {
+            // TODO: реализовать логику
+        }
+        return rez;
+    }
+
+    public static List<List<Integer>> masadelen(int[] masa) {
+        List<List<Integer>> rez = new ArrayList<>();
+        for (int i : masa) {
+            rez.add(sostav(i));
+        }
+        return rez;
+    }
+
+    public static List<Integer> sostav(int ii) {
+        List<Integer> masiv = new ArrayList<>();
+        ii = Math.abs(ii);
+
+        if (ii == 0) {
+            masiv.add(0);
+            return masiv;
+        }
+
+        while (ii > 0) {
+            masiv.add(0, ii % 10);
+            ii /= 10;
+        }
+        return masiv;
+    }
+
+    public static int[] summpopolam(int[] masa, int cala){
+        int[] sered = new int[cala];
+        int sum = 0;
+        for (int i = 0; i < cala; i++){
+            sum += masa[i];
+        }
+        int index = 0;
+        for (int i = 0; i < cala; i++){
+            if (masa[i] > sum / cala) {
+                sered[index++] = masa[i];
+            }
+        }
+        // Обрезаем массив до фактического размера
+        return Arrays.copyOf(sered, index);
+    }
+
+    public static int[] colichestvo(int[] masa, int cala) {
+        int[] res = new int[cala];
+        for (int j = 0; j < cala; j++) {
+
+            int number = 0;
+            int temp = masa[j];
+            if (temp == 0){
+                number = 1;
+            } else {
+                temp = Math.abs(temp);
+                while (temp != 0){
+                    temp /= 10;
+                    number++;
+                }
+            }
+            res[j] = number;
+        }
+        return res;
+    }
+
+    public static int[] sort(int[] masa, int cala) {
+        int[] res = masa.clone();
+        for (int j = 1; j < cala; j++) {
+            for (int i = 0; i < cala - 1; i++) {
+                if (res[i] > res[i + 1]) {
+                    int temp = res[i];
+                    res[i] = res[i + 1];
+                    res[i + 1] = temp;
+                }
+            }
+        }
+        return res;
+    }
+}
